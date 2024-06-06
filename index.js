@@ -50,7 +50,7 @@ proxyServer.on("connection", socket => {
     });
     serverConnection.on("close", () => {
         socket.end();
-        console.log("Server closed");
+        if (log) console.log("Server closed");
     });
 });
 
