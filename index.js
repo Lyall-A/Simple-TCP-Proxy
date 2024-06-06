@@ -1,9 +1,10 @@
 const net = require("net");
+const fs = require("fs");
 
 const rawArgs = process.argv.slice(2);
 const args = Object.fromEntries(rawArgs.map((value, index, array) => value.startsWith("-") ? ([value.substring(1), !array[index + 1]?.startsWith("-") ? array[index + 1] || null : null]) : null).filter(i => i));
 
-let { hostname, port, serverHost, serverPort, log, logData, logError, freeze } = args;
+let { hostname, port, serverHost, serverPort, log, logData, logError, freeze } = {  ...fs.existsSync("config.json") ? JSON.parse(fs.readFileSync("config.json", "utf-8")) : { }, ...args };
 
 if (port && !serverPort) serverPort = port;
 if (!port && serverPort) port = serverPort;
@@ -13,12 +14,11 @@ if (typeof logData != "undefined") logData = true;
 if (typeof logError != "undefined") logError = true;
 if (typeof freeze != "undefined") freeze = Number(freeze);
 
-if (!port || !serverHost || !serverPort) return console.log("Missing arguments");
+if (!port || !serverHost) return console.log("Missing arguments");
 
 const proxyServer = net.createServer();
 
 proxyServer.on("connection", socket => {
-
     if (typeof log != "undefined") console.log(`New connection from ${socket.remoteAddress.split("::ffff:")[1] || socket.remoteAddress}`)
     const serverConnection = net.createConnection({ host: serverHost, port: serverPort }, () => {
         if (log) console.log(`Connected to ${serverHost}:${serverPort}`);
