@@ -21,9 +21,9 @@ const proxyServer = net.createServer();
 proxyServer.on("connection", socket => {
     const ip = socket.remoteAddress.split("::ffff:")[1] || socket.remoteAddress;
 
-    if (typeof log != "undefined") console.log(`[${ip}] Connected`)
+    if (typeof log != "undefined") console.log(`[${new Date().toUTCString()}] [${ip}] Connected`)
     const serverConnection = net.createConnection({ host: serverHost, port: serverPort }, () => {
-        if (log) console.log(`[${ip}] Connected to ${serverHost}:${serverPort}`);
+        if (log) console.log(`[${new Date().toUTCString()}] [${ip}] Connected to ${serverHost}:${serverPort}`);
     });
 
     let frozen = false;
@@ -32,10 +32,10 @@ proxyServer.on("connection", socket => {
     socket.on("data", data => {
         if (frozen) return;
         serverConnection.write(data);
-        if (logData) console.log(`[${ip}] [SOCKET DATA]`, data.toString());
+        if (logData) console.log(`[${new Date().toUTCString()}] [${ip}] [SOCKET DATA]`, data.toString());
     });
     socket.on("error", err => {
-        if (logError) console.log(`[${ip}] [SOCKET ERROR]`, err)
+        if (logError) console.log(`[${new Date().toUTCString()}] [${ip}] [SOCKET ERROR]`, err)
     });
     socket.on("close", () => {
         serverConnection.end();
@@ -45,14 +45,14 @@ proxyServer.on("connection", socket => {
     serverConnection.on("data", data => {
         if (frozen) return;
         socket.write(data);
-        if (logData) console.log(`[${ip}] [SERVER DATA]`, data.toString());
+        if (logData) console.log(`[${new Date().toUTCString()}] [${ip}] [SERVER DATA]`, data.toString());
     });
     serverConnection.on("error", err => {
-        if (logError) console.log(`[${ip}] [SERVER ERROR]`, err);
+        if (logError) console.log(`[${new Date().toUTCString()}] [${ip}] [SERVER ERROR]`, err);
     });
     serverConnection.on("close", () => {
         socket.end();
-        if (log) console.log(`[${ip}] Server closed`);
+        if (log) console.log(`[${new Date().toUTCString()}] [${ip}] Server closed`);
     });
 });
 
