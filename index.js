@@ -39,7 +39,7 @@ proxyServer.on("connection", socket => {
     });
     socket.on("close", () => {
         serverConnection.end();
-        if (log) console.log(`[${ip}] Socket closed`);
+        if (log) console.log(`[${new Date().toUTCString()}] [${ip}] Socket closed`);
     });
 
     serverConnection.on("data", data => {
