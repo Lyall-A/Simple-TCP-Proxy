@@ -21,7 +21,7 @@ const proxyServer = net.createServer();
 proxyServer.on("connection", socket => {
     const ip = socket.remoteAddress.split("::ffff:")[1] || socket.remoteAddress;
 
-    if (typeof log != "undefined") console.log(`[${new Date().toUTCString()}] [${ip}] Connected`)
+    // if (log) console.log(`[${new Date().toUTCString()}] [${ip}] Connected`);
     const serverConnection = net.createConnection({ host: serverHost, port: serverPort }, () => {
         if (log) console.log(`[${new Date().toUTCString()}] [${ip}] Connected to ${serverHost}:${serverPort}`);
     });
@@ -39,7 +39,7 @@ proxyServer.on("connection", socket => {
     });
     socket.on("close", () => {
         serverConnection.end();
-        if (log) console.log(`[${new Date().toUTCString()}] [${ip}] Socket closed`);
+        if (log) console.log(`[${new Date().toUTCString()}] [${ip}] Closed`);
     });
 
     serverConnection.on("data", data => {
@@ -52,7 +52,7 @@ proxyServer.on("connection", socket => {
     });
     serverConnection.on("close", () => {
         socket.end();
-        if (log) console.log(`[${new Date().toUTCString()}] [${ip}] Server closed`);
+        // if (log) console.log(`[${new Date().toUTCString()}] [${ip}] Server closed`);
     });
 });
 
